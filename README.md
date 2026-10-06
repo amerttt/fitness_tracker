@@ -3,7 +3,7 @@
 Antrenmanını, beslenmeni ve vücut ölçülerini takip eden, telefonda çalışan kişisel bir uygulama.
 Hesap ve sunucu yok. Kayıtların sadece senin telefonunda durur, internetsiz de çalışır.
 
-**Adres:** https://alpbayramoglu.github.io/fitness_tracker/
+**Adres:** https://amerttt.github.io/fitness_tracker/
 
 ## Neler var
 

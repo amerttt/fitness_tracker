@@ -1,7 +1,7 @@
 # Fitness Log
 
 Antrenmanını, beslenmeni ve vücut ölçülerini takip eden, telefonda çalışan kişisel bir uygulama.
-Hesap ve sunucu yok. Kayıtların sadece senin telefonunda durur, internetsiz de çalışır.
+Kayıtların telefonunda durur, internetsiz de çalışır. İstersen hesap açıp [Supabase](https://supabase.com) ile senkron edebilirsin; açmazsan hiçbir şey telefondan çıkmaz.
 
 **Adres:** https://amerttt.github.io/fitness_tracker/
 
@@ -29,7 +29,10 @@ ana ekran uygulamasıyla paylaşılmaz. Android'de Chrome → menü → **Ana ek
 
 ## Verilerin ve yedek
 
-- Kayıtlar telefonun tarayıcı hafızasında durur, hiçbir yere gönderilmez.
+- Kayıtlar telefonun tarayıcı hafızasında (IndexedDB) durur ve uygulama hep oradan okur.
+- **Hesap açmazsan** (Ayarlar → Hesap ve senkron) hiçbir şey hiçbir yere gönderilmez.
+- **Hesap açarsan** antrenman, beslenme, ölçü, kardiyo, program ve profil kayıtların Supabase'deki (Frankfurt, AB) veritabanına kopyalanır. Her satır sadece kendi hesabına açıktır (satır düzeyinde güvenlik). Çıkış yapınca telefondaki kayıtlar silinmez. Sunucudaki verinin silinmesi için Supabase panelinden hesabı sil.
+- İlerleme fotoğrafları senkron edilmez, sadece telefonda kalır.
 - **Ana ekrandaki ikonu silersen içindeki veri de silinir.** Düzenli yedek al.
 - **Yedek almak:** Ayarlar → **Dışa aktar**. Oluşan `.json` dosyasını Dosyalar'a, iCloud Drive'a ya da bilgisayarına kaydet.
 - **Geri yüklemek:** Ayarlar → **Yedekten geri yükle**. Kayıtlar birleştirilir, hiçbir şey silinmez. Telefon değiştirirken de bu yolu kullan.
@@ -90,6 +93,7 @@ Düz HTML, CSS ve JavaScript. Derleme adımı ve bağımlılık yok.
 - `index.html`, `app.js`, `style.css`: uygulama
 - `insights.js`: İlerleme sekmesindeki karne, hedefler, dönemler ve hareket gelişimi
 - `photos.js`: ilerleme fotoğrafları · `cardio.js`: kardiyo kayıtları
+- `sync.js`: Supabase senkronu (kütüphanesiz, sadece fetch). Şema ve RLS `supabase/migrations/` altında. Koda sadece publishable anahtar girer; `service_role` anahtarını asla koyma.
 - `library.js`: hazır hareketler · `tips.js`: günün bilgisi (kaynaklı)
 - `skill/fitness-koc/`: Claude Code koçluk skill'i
 - `sw.js`: çevrimdışı çalışma. Her sürümde `sw.js`'teki `VERSION` ile `app.js`'teki `APP_VERSION`'ı birlikte bir artır

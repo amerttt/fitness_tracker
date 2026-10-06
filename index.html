@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Fitness">
 <meta name="theme-color" content="#1B6FB5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'none'; img-src 'self' data: blob:; form-action 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://qiuciwbpdpyvhgedfped.supabase.co; img-src 'self' data: blob:; form-action 'none'; base-uri 'none'">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-180.png">
@@ -161,6 +161,10 @@
       <div id="s-mode"></div>
     </div>
     <div class="card">
+      <h2>Hesap ve senkron</h2>
+      <div id="s-sync"></div>
+    </div>
+    <div class="card">
       <h2>Mac'e aktar</h2>
       <p id="s-status" class="hint"></p>
       <button type="button" id="s-export" class="primary">Dışa aktar (AirDrop)</button>
@@ -205,5 +209,6 @@
 <script src="insights.js"></script>
 <script src="photos.js"></script>
 <script src="cardio.js"></script>
+<script src="sync.js"></script>
 </body>
 </html>

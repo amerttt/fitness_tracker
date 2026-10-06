@@ -1,8 +1,9 @@
 "use strict";
 
 // keep in step with VERSION in sw.js; add a CHANGELOG entry for every release the user would notice
-const APP_VERSION = 50;
+const APP_VERSION = 51;
 const CHANGELOG = [
+  { v: 51, date: "2026-10-06", added: ["İsteğe bağlı hesap ve senkron (Supabase): kayıtların sunucuya da yazılır, telefon değiştirince geri gelir. Ayarlar'da \"Hesap ve senkron\""], changed: ["Gizlilik: hesap açarsan kayıtlar sunucuya gönderilir; açmazsan hiçbir şey telefondan çıkmaz"] },
   { v: 50, date: "2026-10-05", changed: ["Öneri artık tekrar ve RIR kutularını değiştirmiyor; kutular geçen antrenmanın aynı setini gösterir. Öneri sadece ağırlık artırılacaksa kg'yi günceller, yazısı kutuların üstünde kalır."] },
   { v: 49, date: "2026-10-05", changed: ["Set kutuları geçen antrenmanın aynı setiyle dolu gelir (2. set için geçen seferin 2. seti)"],
     removed: ["Set kutularının ve bugünkü setlerin altındaki \"geçen\" satırı (sayfanın altında zaten görünüyor)"] },
@@ -68,6 +69,7 @@ async function save(table, row) {
   await putRaw(table, full);
   await loadCache();
   updateBadge();
+  if (typeof scheduleSync === "function") scheduleSync();
   return full;
 }
 async function remove(table, id) {
@@ -2431,6 +2433,7 @@ async function main() {
   renderAll();
   restoreRest();
   updateBadge();
+  if (typeof initSync === "function") initSync();
 
   if ("serviceWorker" in navigator) {
     const hadController = !!navigator.serviceWorker.controller;

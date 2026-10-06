@@ -41,7 +41,7 @@ async function getSession() {
   return s;
 }
 
-async function rest(session, path, opts = {}) {
+async function sbRest(session, path, opts = {}) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     ...opts,
     headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + session.access_token, "Content-Type": "application/json", ...(opts.headers || {}) },
@@ -67,13 +67,13 @@ async function syncNow() {
       const rows = (await getAll(t)).filter((r) => r.updated_at > pushedTo);
       for (let i = 0; i < rows.length; i += 500) {
         const batch = rows.slice(i, i + 500).map((r) => ({ id: r.id, updated_at: r.updated_at, deleted: r.deleted ? 1 : 0, data: r }));
-        await rest(session, `${t}?on_conflict=user_id,id`, { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(batch) });
+        await sbRest(session, `${t}?on_conflict=user_id,id`, { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(batch) });
         pushed += batch.length;
       }
       // pull what changed on the server since the last pull
       let since = (await getMeta("pulledAt:" + t)) || 0;
       for (;;) {
-        const page = await rest(session, `${t}?select=id,updated_at,data&updated_at=gt.${since}&order=updated_at.asc&limit=1000`);
+        const page = await sbRest(session, `${t}?select=id,updated_at,data&updated_at=gt.${since}&order=updated_at.asc&limit=1000`);
         const incoming = [];
         for (const r of page) {
           const local = await getOne(t, r.id);

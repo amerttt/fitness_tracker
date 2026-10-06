@@ -1,8 +1,9 @@
 "use strict";
 
 // keep in step with VERSION in sw.js; add a CHANGELOG entry for every release the user would notice
-const APP_VERSION = 52;
+const APP_VERSION = 53;
 const CHANGELOG = [
+  { v: 53, date: "2026-10-06", changed: ["Hesap açarken e-posta ya da şifre boşsa \"Anonymous sign-ins are disabled\" yerine ne eksik olduğu yazılır"] },
   { v: 52, date: "2026-10-06", changed: ["Hesap ve senkron kartı çalışmıyordu (butonlar görünmüyordu); düzeltildi"] },
   { v: 51, date: "2026-10-06", added: ["İsteğe bağlı hesap ve senkron (Supabase): kayıtların sunucuya da yazılır, telefon değiştirince geri gelir. Ayarlar'da \"Hesap ve senkron\""], changed: ["Gizlilik: hesap açarsan kayıtlar sunucuya gönderilir; açmazsan hiçbir şey telefondan çıkmaz"] },
   { v: 50, date: "2026-10-05", changed: ["Öneri artık tekrar ve RIR kutularını değiştirmiyor; kutular geçen antrenmanın aynı setini gösterir. Öneri sadece ağırlık artırılacaksa kg'yi günceller, yazısı kutuların üstünde kalır."] },

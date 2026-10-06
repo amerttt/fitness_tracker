@@ -120,7 +120,13 @@ async function renderSync() {
       <button type="button" id="sy-in" class="primary">Giriş yap</button>
       <button type="button" id="sy-up" class="ghost">Hesap aç</button>
       <p class="hint">${esc(syncMsg)}</p>`;
-    const creds = () => ({ email: $("#sy-email").value.trim(), password: $("#sy-pass").value });
+    // an empty email makes Supabase answer "Anonymous sign-ins are disabled", so check before sending
+    const creds = () => {
+      const c = { email: $("#sy-email").value.trim(), password: $("#sy-pass").value };
+      if (!c.email || !c.password) throw new Error("E-posta ve şifreyi yaz");
+      if (c.password.length < 6) throw new Error("Şifre en az 6 karakter olmalı");
+      return c;
+    };
     $("#sy-in").onclick = async () => {
       try {
         const j = await authCall("token?grant_type=password", creds());

@@ -6,6 +6,7 @@
 const SUPABASE_URL = "https://qiuciwbpdpyvhgedfped.supabase.co";
 const SUPABASE_KEY = "sb_publishable_HHutIg9eccd6ddwG7nbhJw_kZ4sTT7v";
 
+let syncAccount = null; // email shown in the Ayarlar mode note while signed in
 let syncing = false, syncAgain = false, syncTimer = null, syncMsg = "";
 
 async function authCall(path, body) {
@@ -108,6 +109,8 @@ async function renderSync() {
   const box = $("#s-sync");
   if (!box) return;
   const s = await getMeta("session");
+  syncAccount = s ? s.email || "Hesap" : null;
+  if (typeof renderMode === "function") renderMode();
   if (s) {
     box.innerHTML = `<p class="hint">${esc(s.email || "Hesap")} ile giriş yapıldı. ${esc(syncMsg)}</p>
       <button type="button" id="sy-now" class="primary">Şimdi eşitle</button>

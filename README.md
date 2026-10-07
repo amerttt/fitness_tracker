@@ -96,7 +96,8 @@ Düz HTML, CSS ve JavaScript. Derleme adımı ve bağımlılık yok.
 - `sync.js`: Supabase senkronu (kütüphanesiz, sadece fetch). Şema ve RLS `supabase/migrations/` altında. Koda sadece publishable anahtar girer; `service_role` anahtarını asla koyma.
 - `library.js`: hazır hareketler · `tips.js`: günün bilgisi (kaynaklı)
 - `skill/fitness-koc/`: Claude Code koçluk skill'i
-- `sw.js`: çevrimdışı çalışma. Her sürümde `sw.js`'teki `VERSION` ile `app.js`'teki `APP_VERSION`'ı birlikte bir artır
+- `sw.js`: çevrimdışı çalışma. Her değişiklikte `sw.js`'teki `VERSION` ile `app.js`'teki `APP_VERSION`'ı birlikte artır
   ve `CHANGELOG`'a bir satır ekle; yoksa telefonlar eski dosyaları kullanmaya devam eder.
+- Sürüm numarası: her değişiklik noktalı ilerler (`54.1`, `54.2`…). Tam sayı (`55`) sadece sahibi isteyince artar.
 
 Yerelde denemek için klasörde `python3 -m http.server` çalıştırıp `http://localhost:8000` adresini aç.

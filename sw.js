@@ -1,6 +1,7 @@
 // Offline shell: serve cached files instantly, refresh them in the background.
 // Bump VERSION on every release (and APP_VERSION in app.js) so the new files are installed as one consistent set.
-const VERSION = 54;
+// Dotted bumps (54.1, 54.2) for every change; the whole number only when the owner asks.
+const VERSION = "54.1";
 const CACHE = "fitness-v" + VERSION;
 const SHELL = ["./", "index.html", "library.js", "tips.js", "app.js", "insights.js", "photos.js", "cardio.js", "sync.js", "style.css", "manifest.webmanifest", "icon-180.png", "icon-512.png"];
 

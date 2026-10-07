@@ -1,8 +1,11 @@
 "use strict";
 
-// keep in step with VERSION in sw.js; add a CHANGELOG entry for every release the user would notice
-const APP_VERSION = 54;
+// keep in step with VERSION in sw.js; add a CHANGELOG entry for every release the user would notice.
+// Every shipped change bumps the dotted part (54.1, 54.2); the whole number (v55) only moves when the owner asks for it.
+const APP_VERSION = "54.1";
+const vcmp = (a, b) => { const x = String(a).split(".").map(Number), y = String(b).split(".").map(Number); for (let i = 0; i < Math.max(x.length, y.length); i++) { const d = (x[i] || 0) - (y[i] || 0); if (d) return d; } return 0; };
 const CHANGELOG = [
+  { v: "54.1", date: "2026-10-07", changed: ["Sürüm numarası artık 54.1, 54.2 diye ilerler; v55 gibi tam sayı sadece büyük güncellemelerde", "Ayarlar'da çalışma modu notu: hesaba giriş yaptıysan veri hesabında da durur, ikonu silsen de geri gelir"] },
   { v: 54, date: "2026-10-07", changed: ["Hesap kartında hata çıkınca yazdığın e-posta ve şifre silinmiyor; hata mesajları Türkçe"] },
   { v: 53, date: "2026-10-06", changed: ["Hesap açarken e-posta ya da şifre boşsa \"Anonymous sign-ins are disabled\" yerine ne eksik olduğu yazılır"] },
   { v: 52, date: "2026-10-06", changed: ["Hesap ve senkron kartı çalışmıyordu (butonlar görünmüyordu); düzeltildi"] },
@@ -2226,8 +2229,11 @@ function renderMode() {
   const tab = isIOS() && !isStandalone();
   $("#mode-banner").classList.toggle("hidden", !tab);
   $("#s-mode").innerHTML = isStandalone()
-    ? `<p class="ok-text">✓ Ana ekran uygulaması olarak çalışıyor. Veri bu uygulamanın kendi hafızasında, kalıcı.</p>
-       <p class="hint">Ana ekrandaki ikonu silersen buradaki veri de silinir. Silmeden önce export al.</p>`
+    ? (syncAccount
+      ? `<p class="ok-text">✓ Ana ekran uygulaması olarak çalışıyor. Kayıtların telefonda ve ${esc(syncAccount)} hesabında.</p>
+       <p class="hint">Ana ekrandaki ikonu silsen de giriş yapınca kayıtların geri gelir. İlerleme fotoğrafları hesaba gitmez, sadece telefonda durur.</p>`
+      : `<p class="ok-text">✓ Ana ekran uygulaması olarak çalışıyor. Veri bu uygulamanın kendi hafızasında, kalıcı.</p>
+       <p class="hint">Ana ekrandaki ikonu silersen buradaki veri de silinir. Silmeden önce export al ya da Hesap ve senkron'dan hesap aç.</p>`)
     : `<p class="warn-text">Safari sekmesinde çalışıyor.</p>
        <p class="hint">Buradaki veri ana ekran uygulamasıyla paylaşılmaz ve Safari 7 gün açılmayan sitelerin verisini silebilir.</p>
        <ol class="steps">
@@ -2256,13 +2262,13 @@ async function renderVersion() {
   if (!el) return;
   const list = (label, items, cls) => (items?.length ? `<div class="cl-group ${cls}"><b>${label}</b><ul>${items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "");
   const entry = (c) => list("Eklendi", c.added, "add") + list("Değişti", c.changed, "chg") + list("Kaldırıldı", c.removed, "rem");
-  const cur = CHANGELOG.find((c) => c.v === APP_VERSION);
-  const older = CHANGELOG.filter((c) => c.v < APP_VERSION);
+  const cur = CHANGELOG.find((c) => String(c.v) === APP_VERSION);
+  const older = CHANGELOG.filter((c) => vcmp(c.v, APP_VERSION) < 0);
   el.innerHTML = `<div class="ver-head">Sürüm <b>v${APP_VERSION}</b><span id="s-version-new"></span></div>
     ${cur ? `<div class="changelog"><div class="hint">Bu sürümde (${fmtDate(cur.date)})</div>${entry(cur)}
       ${older.length ? `<details><summary>Önceki sürümler</summary>${older.map((c) => `<div class="cl-old"><div class="hint">v${c.v} · ${fmtDate(c.date)}</div>${entry(c)}</div>`).join("")}</details>` : ""}</div>` : ""}`;
   const v = await workerVersion();
-  if (v && v > APP_VERSION) $("#s-version-new").innerHTML = ` · <span class="ver-new">v${v} indirildi, uygulamayı kapatıp aç</span>`;
+  if (v && vcmp(v, APP_VERSION) > 0) $("#s-version-new").innerHTML = ` · <span class="ver-new">v${v} indirildi, uygulamayı kapatıp aç</span>`;
 }
 
 // ---------- misc ----------
@@ -2443,7 +2449,7 @@ async function main() {
     navigator.serviceWorker.addEventListener("controllerchange", async () => {
       if (!hadController) return;
       const v = await workerVersion();
-      toast(v && v !== APP_VERSION ? `Yeni sürüm yüklendi: v${v}. Şu an açık olan v${APP_VERSION}. Uygulamayı kapatıp aç.` : "Yeni sürüm yüklendi, uygulamayı kapatıp aç");
+      toast(v && String(v) !== APP_VERSION ? `Yeni sürüm yüklendi: v${v}. Şu an açık olan v${APP_VERSION}. Uygulamayı kapatıp aç.` : "Yeni sürüm yüklendi, uygulamayı kapatıp aç");
       renderVersion();
     });
     navigator.serviceWorker.register("sw.js").catch(() => {});

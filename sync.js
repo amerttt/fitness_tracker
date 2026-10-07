@@ -93,7 +93,8 @@ async function syncNow() {
     syncMsg = "Eşitlenemedi: " + e.message;
   } finally {
     syncing = false;
-    renderSync();
+    // signed out with the form on screen: leave it alone so typed text survives a background sync
+    if ((await getMeta("session")) || !$("#sy-in")) renderSync();
     if (syncAgain) { syncAgain = false; scheduleSync(); }
   }
 }
@@ -119,7 +120,11 @@ async function renderSync() {
       <label>Şifre (en az 6 karakter) <input type="password" id="sy-pass" autocomplete="current-password"></label>
       <button type="button" id="sy-in" class="primary">Giriş yap</button>
       <button type="button" id="sy-up" class="ghost">Hesap aç</button>
-      <p class="hint">${esc(syncMsg)}</p>`;
+      <p class="hint" id="sy-msg">${esc(syncMsg)}</p>`;
+    // show errors in place: re-rendering the card would wipe what was typed
+    const say = (m) => { syncMsg = m; $("#sy-msg").textContent = m; };
+    const tr = (m) => /invalid login credentials/i.test(m) ? "Bu e-posta ile hesap yok ya da şifre yanlış. Hesabın yoksa önce \"Hesap aç\"a bas."
+      : /already registered|already been registered/i.test(m) ? "Bu e-posta ile hesap zaten var. \"Giriş yap\"a bas." : m;
     // an empty email makes Supabase answer "Anonymous sign-ins are disabled", so check before sending
     const creds = () => {
       const c = { email: $("#sy-email").value.trim(), password: $("#sy-pass").value };
@@ -134,14 +139,14 @@ async function renderSync() {
         syncMsg = "";
         await renderSync();
         syncNow();
-      } catch (e) { syncMsg = e.message; renderSync(); }
+      } catch (e) { say(tr(e.message)); }
     };
     $("#sy-up").onclick = async () => {
       try {
         const j = await authCall("signup", creds());
         if (j.access_token) { await storeSession(j); syncMsg = ""; await renderSync(); syncNow(); }
-        else { syncMsg = "Hesap açıldı. E-postandaki bağlantıyı onayla, sonra giriş yap."; renderSync(); }
-      } catch (e) { syncMsg = e.message; renderSync(); }
+        else say("Hesap açıldı. E-postandaki bağlantıyı onayla, sonra giriş yap.");
+      } catch (e) { say(tr(e.message)); }
     };
   }
 }
